@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: swagger-kubernetes
+  labels:
+    app: swagger-kubernetes
+spec:
+  ports:
+  - name: tcp
+    port: 8080
+    nodePort: 32255
+    targetPort: 8080
+  type: NodePort
+  selector:
+    app: swagger-kubernetes
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: swagger-kubernetes
+  labels:
+    app: swagger-kubernetes
+spec:
+  selector:
+    matchLabels:
+      app: swagger-kubernetes
+  template:
+    metadata:
+      labels:
+        app: swagger-kubernetes
+    spec:
+      serviceAccount: default
+      imagePullPolicy: Always
+      containers:
+      - name: swagger-kubernetes
+        image: registry.cn-beijing.aliyuncs.com/mydlq/swagger-kubernetes:2.1.1
+        ports:
+        - containerPort: 8080
